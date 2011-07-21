@@ -5,6 +5,7 @@
 </head>
 <body>
 
+B<g:link action="etl">Load the stores</g:link>
 	<g:link action="create">Go to create</g:link><br/>
 	<g:link controller="person" action="list">See list of people</g:link>
 	<h1> List all Gmstores</h1>

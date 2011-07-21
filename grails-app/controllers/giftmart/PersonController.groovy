@@ -20,7 +20,6 @@ class PersonController {
 	
 	def list = {
 		def pList = Person.list()
-		println pList
 		render(view: "list", model: [pList: pList])
 	}
 	
@@ -49,7 +48,6 @@ class PersonController {
 		def allLinesLessHeader = new File("/media/sf_UMG/UMB.csv").readLines()[1..-1]
 		def countBadEntries = 0
 		allLinesLessHeader.eachWithIndex { line, i -> 
-//			println line.class
 			//0 BKEY,1 LNAME,2 FNAME,3 COMMENTS,4 EMAIL,5 BadgeDATE,6 AttendedDATE,7 NKEY,8 TITLE,
 			//9 OO,10 ADATE1,11 ADATE2,12 ADATE3,13 ADATE4,14 ADATE5,15 ADATE6,16 ADATE7,17 ADATE8,18 ADATE9,19 ARK
 			def tokens = line.tokenize(',')
@@ -66,7 +64,6 @@ class PersonController {
 				oo: tokens[9] == "`" ? null : tokens[9] ,
 				badgekey: tokens[0] + "" + tokens[7]
 				)
-			//def date = new Date(tokens[6])
 			i%1000 == 0 ? println("how we doin? " + p.badgekey + " : " + tokens[6]) : ''
 			if(tokens.size() <= 19) {
 				p.save(flush:true)
@@ -86,6 +83,16 @@ class PersonController {
 			// if they aren't null aka `, save em and validate
 			// Still need to think about which keys to be storing here, think I should store the bkeys and badgekeys on the attendance
 			// in case we migrate the primary key, it'll cause less headache
+			def datelist = [tokens[6], tokens[10..18]].flatten()
+			datelist.each { date ->
+				if(date != '`') {
+					def att = new Attendance(d: date, p: p, gm: p.store, bkey: p.bkey, badgekey: p.badgekey)
+					att.save(flush:true)
+					if(!att.validate()) {
+						println "Oh No! The date was no good... it was: " + att.d
+					}
+				}
+			}
 			
 				
 		}	

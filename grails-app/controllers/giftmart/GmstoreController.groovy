@@ -53,6 +53,7 @@ class GmstoreController {
 	 *  3. Have a browser hit this url
 	 *  to debug well:
 	 *  delete all records from the table, so a jillion uq constraints arent thrown
+	 *  4. Do the same to UMB.dbf and hit /person/etl, that one will take longer but saves all the attendances as well
 	 */
 	def etl = {
 		def allLinesLessHeader = params.extra ? new File("/media/sf_UMG/badStoresUM.csv").readLines()[1..-1] : new File("/media/sf_UMG/UM.csv").readLines()[1..-1]
